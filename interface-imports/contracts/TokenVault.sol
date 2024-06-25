@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./Token.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract TokenVault {
     address public owner;
-    Token public token;
+    IERC20 public token;
 
     mapping(address => uint256) public balances;
 
@@ -15,7 +15,7 @@ contract TokenVault {
 
     constructor(address tokenAddress) {
         owner = msg.sender;
-        token = Token(tokenAddress);
+        token = IERC20(tokenAddress);
     }
 
     function deposit(uint256 amount) external {
