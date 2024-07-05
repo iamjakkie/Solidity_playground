@@ -3,8 +3,8 @@ const { ethers } = require("hardhat");
 
 describe('Proxy test', () => {
     let owner, library, proxy;
-    beforeEach(async () => {
-        owner = await ethers.getSigners();
+    before(async () => {
+        [owner] = await ethers.getSigners();
 
         const Library = await ethers.getContractFactory('Library');
         library = await Library.deploy();
@@ -16,20 +16,17 @@ describe('Proxy test', () => {
 
     describe('delegatecall', () => {
         it('Set the value through delegatecall', async () => {
-            const proxyWithOwner = proxy.connect(owner);
+            const proxyAsOwner = proxy.connect(owner);
 
-        // Encode the function call to setValue
-        const setValueAbi = ["function setValue(uint256 _value)"];
-        const setValueIface = new ethers.utils.interface(setValueAbi);
-        const data = setValueIface.encodeFunctionData("setValue", [42]);
+            expect(await proxyAsOwner.libraryAddress()).to.equal(library.target);
 
-        // Send the transaction to the proxy's fallback function
-        const tx = await proxyWithOwner.fallback({ data });
-        await tx.wait();
+            const tx = await proxyAsOwner.setValue(10);
+            await tx.wait();
 
-        // Check if the value was correctly set in the proxy contract's storage
-        const value = await proxy.value();
-        expect(value).to.equal(42);
+            const proxyValue = await proxyAsOwner.value();
+            expect(proxyValue).to.equal(0);
+            const libraryValue = await library.value();
+            expect(libraryValue).to.equal(10);
         })
     });
 })

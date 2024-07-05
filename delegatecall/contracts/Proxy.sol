@@ -9,9 +9,11 @@ contract Proxy {
         libraryAddress = _libraryAddress;
     }
 
-    fallback() external payable {
-        (bool success, ) = libraryAddress.delegatecall(msg.data);
-        require(success, "DELEGATECALL failed");
+    function setValue(uint256 _value) public {
+        (bool success, ) = libraryAddress.delegatecall(
+            abi.encodeWithSignature("setValue(uint256)", _value)
+        );
+        require(success, "Error setting value");
     }
 
     function setLibraryAddress(address _libraryAddress) public {
