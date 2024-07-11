@@ -20,13 +20,20 @@ describe('Proxy test', () => {
 
             expect(await proxyAsOwner.libraryAddress()).to.equal(library.target);
 
+            let libraryAddress = await proxyAsOwner.libraryAddress();
+            console.log('lib', libraryAddress);
+
+
             const tx = await proxyAsOwner.setValue(10);
             await tx.wait();
 
+            libraryAddress = await proxyAsOwner.libraryAddress();
+            console.log('lib', libraryAddress);
+
             const proxyValue = await proxyAsOwner.value();
-            expect(proxyValue).to.equal(0);
+            expect(proxyValue).to.equal(10);
             const libraryValue = await library.value();
-            expect(libraryValue).to.equal(10);
+            expect(libraryValue).to.equal(0);
         })
     });
 })

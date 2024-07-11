@@ -34,4 +34,12 @@ contract EVMStorageSingleSlot {
             z := sload(2)
         }
     }
+
+    function test_sload_new() public view returns (uint256 x, uint256 y, bytes32 z){
+        assembly {
+            x := sload(s_x.slot)
+            y := sload(s_y.slot)
+            z := sload(s_z.slot)
+        }
+    }
 }
