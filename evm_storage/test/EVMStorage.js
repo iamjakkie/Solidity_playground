@@ -117,4 +117,53 @@ describe('EVM Storage tests', () => {
             expect(not_mask).to.equal("0xffffffffffffffffffffffffffffffffffffffffffffffffffff0000ffffffff")
         })
     })
+
+    describe('Single slot packed variables', () => {
+        let packedSlot
+        beforeEach(async () => {
+            const PackedSlot = await ethers.getContractFactory('EVMStoragePackedSlot');
+            packedSlot = await PackedSlot.deploy();
+        });
+
+        it('Test sstore', async () => {
+            await packedSlot.sstore();
+
+            const s_a_value = await packedSlot.s_a();
+            const s_b_value = await packedSlot.s_b();
+            const s_c_value = await packedSlot.s_c();
+            const s_d_value = await packedSlot.s_d();
+
+            expect(s_a_value).to.equal(11);
+            expect(s_b_value).to.equal(22);
+            expect(s_c_value).to.equal(33);
+            expect(s_d_value).to.equal(44);
+            
+        })
+
+        it('Test offsets', async() => {
+            const offsets = await packedSlot.slot0_offset();
+            const [s_a_offset, s_b_offset, s_c_offset, s_d_offset] = offsets;
+
+            expect(s_a_offset).to.equal(0);
+            expect(s_b_offset).to.equal(16);
+            expect(s_c_offset).to.equal(24);
+            expect(s_d_offset).to.equal(28);
+
+        })
+
+        it('Test sstore offset', async () => {
+            await packedSlot.sstore_offset();
+
+            const s_a_value = await packedSlot.s_a();
+            const s_b_value = await packedSlot.s_b();
+            const s_c_value = await packedSlot.s_c();
+            const s_d_value = await packedSlot.s_d();
+
+            expect(s_a_value).to.equal(11);
+            expect(s_b_value).to.equal(22);
+            expect(s_c_value).to.equal(33);
+            expect(s_d_value).to.equal(44);
+            
+        })
+    })
 })

@@ -27,7 +27,7 @@ contract EVMStorageSingleSlot {
         }
     }
 
-    function sload() public view returns (uint256 x, uint256 y, bytes32 z){
+    function sload() public view returns (uint256 x, uint256 y, bytes32 z) {
         assembly {
             x := sload(0)
             y := sload(1)
@@ -35,7 +35,7 @@ contract EVMStorageSingleSlot {
         }
     }
 
-    function sload_new() public view returns (uint256 x, uint256 y, bytes32 z){
+    function sload_new() public view returns (uint256 x, uint256 y, bytes32 z) {
         assembly {
             x := sload(s_x.slot)
             y := sload(s_y.slot)
@@ -70,7 +70,7 @@ contract BitMasking {
 contract EVMStoragePackedSlotBytes {
     // slot 0 (packed right to left)
     // 0x000000 ... 00000000
-    
+
     //0x000000...abababab
     bytes4 public b4 = 0xabababab;
     //0x000000..cdcdabababab
@@ -98,11 +98,82 @@ contract EVMStoragePackedSlot {
 
     function sstore() public {
         assembly {
-            let v:= sload(0)
+            let v := sload(0)
 
+            // set s_a = 11
             // s_d | s_c | s_b | s_a
             // 32  | 32  | 64  | 128
 
+            let mask_a := not(sub(shl(128, 1), 1))
+            v := and(v, mask_a)
+            v := or(v, 11)
+
+            // set s_b = 22
+            let mask_b := not(shl(128, sub(shl(64, 1), 1)))
+            v := and(v, mask_b)
+            v := or(v, shl(128, 22))
+            sstore(0, v)
+
+            // set s_c = 33
+            let mask_c := not(shl(192, sub(shl(32, 1), 1)))
+            v := and(v, mask_c)
+            v := or(v, shl(192, 33))
+            sstore(0, v)
+
+            // set s_d = 44
+            let mask_d := not(shl(224, sub(shl(32, 1), 1)))
+            v := and(v, mask_d)
+            v := or(v, shl(224, 44))
+            sstore(0, v)
+        }
+    }
+
+    function slot0_offset()
+        public
+        pure
+        returns (
+            uint256 a_offset,
+            uint256 b_offset,
+            uint256 c_offset,
+            uint256 d_offset
+        )
+    {
+        assembly {
+            a_offset := s_a.offset // 0 = 0 * 8 = 0 bits
+            b_offset := s_b.offset // 16 = 16 * 8 = 128 bits
+            c_offset := s_c.offset // 24 = 24 * 8 = 192 bits
+            d_offset := s_d.offset // 28 = 28 * 8 = 224 bits
+        }
+    }
+
+    function sstore_offset() public {
+        assembly {
+            let v := sload(s_a.slot)
+
+            // set s_a = 11
+            // s_d | s_c | s_b | s_a
+            // 32  | 32  | 64  | 128
+
+            let mask_a := not(sub(shl(128, 1), 1))
+            v := and(v, mask_a)
+            v := or(v, 11)
+
+            // set s_b = 22
+            let mask_b := not(shl(mul(s_b.offset, 8), sub(shl(64, 1), 1)))
+            v := and(v, mask_b)
+            v := or(v, shl(mul(s_b.offset, 8), 22))
+            sstore(0, v)
+
+            // set s_c = 33
+            let mask_c := not(shl(mul(s_c.offset, 8), sub(shl(32, 1), 1)))
+            v := and(v, mask_c)
+            v := or(v, shl(mul(s_c.offset, 8), 33))
+            sstore(0, v)
+
+            // set s_d = 44
+            let mask_d := not(shl(mul(s_d.offset, 8), sub(shl(32, 1), 1)))
+            v := and(v, mask_d)
+            v := or(v, shl(mul(s_d.offset, 8), 44))
             sstore(0, v)
         }
     }
