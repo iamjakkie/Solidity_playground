@@ -166,4 +166,20 @@ describe('EVM Storage tests', () => {
             
         })
     })
+
+    describe('Storage structs', async() => {
+        let storageStruct
+        beforeEach(async () => {
+            const StorageStruct = await ethers.getContractFactory('EVMStorageStruct');
+            storageStruct = await StorageStruct.deploy();
+        });
+
+        it('Get single slot struct', async() => {
+            const [x_value, y_value, z_value] = await storageStruct.get_single_slot_struct();
+            
+            expect(x_value).to.equal(1);
+            expect(y_value).to.equal(2);
+            expect(z_value).to.equal(3);
+        })
+    })
 })
