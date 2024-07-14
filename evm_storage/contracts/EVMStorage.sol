@@ -45,7 +45,26 @@ contract EVMStorageSingleSlot {
 }
 
 contract BitMasking {
-    
+    // |        256 bits        |
+    // 000 ... 000 | 111 ... 111
+
+    function mask() public pure returns (bytes32 mask) {
+        assembly {
+            mask := sub(shl(16, 1), 1)
+        }
+    }
+
+    function shift_mask() public pure returns (bytes32 mask) {
+        assembly {
+            mask := shl(32, sub(shl(16, 1), 1))
+        }
+    }
+
+    function not_mask() public pure returns (bytes32 mask) {
+        assembly {
+            mask := not(shl(32, sub(shl(16, 1), 1)))
+        }
+    }
 }
 
 contract EVMStoragePackedSlotBytes {
