@@ -207,4 +207,12 @@ contract EVMStorageStruct {
             z := shr(192, s)
         }
     }
+
+    function get_multiple_slots_struct() public view returns (uint256 a, uint256 b, uint256 c) {
+        assembly {
+            a := sload(1)
+            b := sload(2)
+            c := sload(3)
+        }
+    }
 }

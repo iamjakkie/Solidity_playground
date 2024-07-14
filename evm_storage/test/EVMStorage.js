@@ -181,5 +181,13 @@ describe('EVM Storage tests', () => {
             expect(y_value).to.equal(2);
             expect(z_value).to.equal(3);
         })
+
+        it('Get multiple slots struct', async() => {
+            const [a_value, b_value, c_value] = await storageStruct.get_multiple_slots_struct();
+
+            expect(a_value).to.equal(11);
+            expect(b_value).to.equal(22);
+            expect(c_value).to.equal(33);
+        })
     })
 })
