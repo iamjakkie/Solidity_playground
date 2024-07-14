@@ -2,13 +2,14 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
 describe('EVM Storage tests', () => {
-    let singleSlot
-    before(async () => {
-        // const SingleSlot = await ethers.getContractFactory('EVMStorageSingleSlot');
-        // singleSlot = await SingleSlot.deploy();
-    });
+    // before(async () => {
+    //     // const SingleSlot = await ethers.getContractFactory('EVMStorageSingleSlot');
+    //     // singleSlot = await SingleSlot.deploy();
+    // });
 
     describe('Single Slot', () => {
+        let singleSlot
+
         beforeEach(async () => {
             const SingleSlot = await ethers.getContractFactory('EVMStorageSingleSlot');
             singleSlot = await SingleSlot.deploy();
@@ -89,6 +90,31 @@ describe('EVM Storage tests', () => {
             expect(s_y_value).to.equal(456);
             expect(s_z_value).to.equal("0x0000000000000000000000000000000000000000000000000000000000cdcdcd");
         })
+    })
 
+    describe('BitMasking', () => {
+        let bitMasking
+        beforeEach(async () => {
+            const BitMasking = await ethers.getContractFactory('BitMasking');
+            bitMasking = await BitMasking.deploy();
+        });
+
+        it('Test Mask', async() => {
+            const mask = await bitMasking.mask();
+
+            expect(mask).to.equal("0x000000000000000000000000000000000000000000000000000000000000ffff");
+        })
+
+        it('Test Shift Mask', async() => {
+            const shift_mask = await bitMasking.shift_mask();
+
+            expect(shift_mask).to.equal("0x0000000000000000000000000000000000000000000000000000ffff00000000")
+        })
+
+        it('Not Mask', async() => {
+            const not_mask = await bitMasking.not_mask();
+
+            expect(not_mask).to.equal("0xffffffffffffffffffffffffffffffffffffffffffffffffffff0000ffffffff")
+        })
     })
 })
