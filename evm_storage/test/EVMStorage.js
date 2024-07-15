@@ -206,4 +206,52 @@ describe('EVM Storage tests', () => {
         })
 
     })
+
+    describe('Storage Fixed array', async() => {
+        let fixedArray
+        beforeEach(async () => {
+            const FixedArray = await ethers.getContractFactory('EVMStorageFixedArray');
+            fixedArray = await FixedArray.deploy();
+        });
+
+        it('Verify arr 0 values', async() => {
+            const val_0 = await fixedArray.get_arr0(0);
+            const val_1 = await fixedArray.get_arr0(1);
+            const val_2 = await fixedArray.get_arr0(2);
+            
+            expect(val_0).to.equal(1);
+            expect(val_1).to.equal(2);
+            expect(val_2).to.equal(3);
+
+        })
+
+        it('Verify arr 1 values', async() => {
+            const val_0 = await fixedArray.get_arr1(0);
+            const val_1 = await fixedArray.get_arr1(1);
+            const val_2 = await fixedArray.get_arr1(2);
+            
+            expect(val_0).to.equal(4);
+            expect(val_1).to.equal(5);
+            expect(val_2).to.equal(6);
+
+        })
+
+        it('Verify arr 2 values', async() => {
+            const val_0 = await fixedArray.get_arr2(0);
+            const val_1 = await fixedArray.get_arr2(1);
+            const val_2 = await fixedArray.get_arr2(2);
+            const val_3 = await fixedArray.get_arr2(3);
+            const val_4 = await fixedArray.get_arr2(4);
+            const val_5 = await fixedArray.get_arr2(5);
+            
+            expect(val_0).to.equal(7);
+            expect(val_1).to.equal(8);
+            expect(val_2).to.equal(9);
+            expect(val_3).to.equal(10);
+            expect(val_4).to.equal(11);
+            expect(val_5).to.equal(0);
+
+        })
+
+    })
 })

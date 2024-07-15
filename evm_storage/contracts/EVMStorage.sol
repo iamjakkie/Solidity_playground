@@ -237,3 +237,44 @@ contract EVMStorageConstants {
         }
     }
 }
+
+contract EVMStorageFixedArray {
+    // Fixed array with <= 32 bytes elements
+    // slot of element = slot where array is declared + index of array element
+
+    // slot 0, slot 1, slot 3
+    uint256[3] private arr_0 = [1,2,3];
+    // slot 3, slot 4, slot 5
+    uint256[3] private arr_1 = [4,5,6];
+    // slot 6, slot 6, slot 7, slot 7, slot 8
+    uint128[5] private arr_2 = [7,8,9,10,11];
+
+    function get_arr0(uint256 i) public view returns (uint256 v) {
+        assembly {
+            v := sload(i)
+        }
+    }
+
+    function get_arr1(uint256 i) public view returns (uint256 v) {
+        assembly {
+            v := sload(add(3, i))
+        }
+    }
+
+    function get_arr2(uint256 i) public view returns (uint128 v) {
+        assembly {
+            let b32 := sload(add(6, div(i, 2)))
+
+            // slot 6 = 1st element | 0th element
+            // slot 7 = 3rd element | 2nd element
+            // slot 8 = 000 ... 000 | 4th element
+
+            // i is even => get right 128 bits => cast to uint128
+            // i is odd => get left 128 bits => shift right 128 bits
+
+            switch mod(i, 2)
+            case 1 { v := shr(128, b32) }
+            default { v := b32 }
+        }
+    }
+}
