@@ -254,4 +254,32 @@ describe('EVM Storage tests', () => {
         })
 
     })
+
+    describe('Storage Dynamic array', async() => {
+        let dynamicArray
+        beforeEach(async () => {
+            const DynamicArray = await ethers.getContractFactory('EVMStorageDynamicArray');
+            dynamicArray = await DynamicArray.deploy();
+        });
+
+        it('Verify arr values', async() => {
+            const [arr_val_0, arr_b32_0, len] = await dynamicArray.get_arr_val(0, 0);
+
+            expect(arr_val_0).to.equal(11);
+            expect(arr_b32_0).to.equal("0x000000000000000000000000000000000000000000000000000000000000000b");
+            expect(len).to.equal(3);
+
+            const [arr_val_1, arr_b32_1, ] = await dynamicArray.get_arr_val(0, 1);
+
+            expect(arr_val_1).to.equal(22);
+            expect(arr_b32_1).to.equal("0x0000000000000000000000000000000000000000000000000000000000000016");
+            
+            const [arr_val_2, arr_b32_2, ] = await dynamicArray.get_arr_val(0, 2);
+
+            expect(arr_val_2).to.equal(33);
+            expect(arr_b32_2).to.equal("0x0000000000000000000000000000000000000000000000000000000000000021");
+            
+        })
+
+    })
 })

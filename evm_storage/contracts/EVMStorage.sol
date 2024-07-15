@@ -278,3 +278,21 @@ contract EVMStorageFixedArray {
         }
     }
 }
+
+contract EVMStorageDynamicArray {
+    // slot of element = keccak256(slot where array is declared)
+    //                   + size of element * index of element
+    // keccak256(0), keccak256(0) + 1, keccak256(0) + 2
+    uint256[] private arr = [11, 22, 33];
+    // keccak256(1), keccak256(1), keccak256(1) + 1
+    uint128[] private arr_2 = [1, 2, 3];
+
+    function get_arr_val(uint256 slot, uint256 i) public view returns (uint256 val, bytes32 b32, uint256 len) {
+        bytes32 start = keccak256(abi.encode(slot));
+        assembly {
+            len := sload(slot)
+            val := sload(add(start, i))
+            b32 := val
+        }
+    }
+}
