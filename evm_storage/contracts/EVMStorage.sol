@@ -216,3 +216,24 @@ contract EVMStorageStruct {
         }
     }
 }
+
+contract EVMStorageConstants {
+    // constants and immutables don't use storage
+    // slot0
+    uint256 public s0 = 1;
+    uint256 constant X = 123;
+    address public immutable owner;
+    // slot1
+    uint256 public s1 = 2;
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    function get_slots() public view returns (uint256 v0, uint256 v1) {
+        assembly {
+            v0 := sload(0)
+            v1 := sload(1)
+        }
+    }
+}

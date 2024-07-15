@@ -190,4 +190,20 @@ describe('EVM Storage tests', () => {
             expect(c_value).to.equal(33);
         })
     })
+
+    describe('Storage constants', async() => {
+        let storageConstant
+        beforeEach(async () => {
+            const StorageConstant = await ethers.getContractFactory('EVMStorageConstants');
+            storageConstant = await StorageConstant.deploy();
+        });
+
+        it('Verify slots dont store constants', async() => {
+            const [v_0, v_1] = await storageConstant.get_slots()
+
+            expect(v_0).to.equal(1);
+            expect(v_1).to.equal(2);
+        })
+
+    })
 })
