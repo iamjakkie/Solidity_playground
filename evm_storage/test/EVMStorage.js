@@ -301,4 +301,23 @@ describe('EVM Storage tests', () => {
         })
 
     })
+
+    describe('Storage Nested Mapping', async() => {
+        let mapping
+        beforeEach(async () => {
+            const Mapping = await ethers.getContractFactory('EVMStorageNestedMapping');
+            mapping = await Mapping.deploy();
+        });
+
+        it('Verify', async() => {
+            const add1_val = await mapping.get_value("0x0000000000000000000000000000000000000001", "0x0000000000000000000000000000000000000002");
+            const add2_val = await mapping.get_value("0x0000000000000000000000000000000000000002", "0x0000000000000000000000000000000000000003");
+            const add3_val = await mapping.get_value("0x0000000000000000000000000000000000000003", "0x0000000000000000000000000000000000000001");
+            
+            expect(add1_val).to.equal(11);
+            expect(add2_val).to.equal(22);
+            expect(add3_val).to.equal(33);
+        })
+
+    })
 })
