@@ -282,4 +282,15 @@ describe('EVM Storage tests', () => {
         })
 
     })
+
+    describe('Storage Mapping', async() => {
+        let mapping
+        beforeEach(async () => {
+            const Mapping = await ethers.getContractFactory('EVMStorageMapping');
+            mapping = await Mapping.deploy();
+        });
+
+        it('Verify')
+
+    })
 })
