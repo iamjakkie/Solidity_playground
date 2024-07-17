@@ -290,7 +290,15 @@ describe('EVM Storage tests', () => {
             mapping = await Mapping.deploy();
         });
 
-        it('Verify')
+        it('Verify', async() => {
+            const add1_val = await mapping.get_value("0x0000000000000000000000000000000000000001");
+            const add2_val = await mapping.get_value("0x0000000000000000000000000000000000000002");
+            const add3_val = await mapping.get_value("0x0000000000000000000000000000000000000003");
+            
+            expect(add1_val).to.equal(11);
+            expect(add2_val).to.equal(22);
+            expect(add3_val).to.equal(33);
+        })
 
     })
 })
