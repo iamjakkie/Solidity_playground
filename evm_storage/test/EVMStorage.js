@@ -320,4 +320,24 @@ describe('EVM Storage tests', () => {
         })
 
     })
+
+    describe('Storage Mapping Dynamic Array', async() => {
+        let mapping
+        beforeEach(async () => {
+            const Mapping = await ethers.getContractFactory('EVMStorageMappingArray');
+            mapping = await Mapping.deploy();
+        });
+
+        it('Verify', async() => {
+            const [add1_val0, ] = await mapping.get_map_array_val("0x0000000000000000000000000000000000000001", 0);
+            const [add1_val1, ] = await mapping.get_map_array_val("0x0000000000000000000000000000000000000001", 1); 
+            const [add1_val2, len] = await mapping.get_map_array_val("0x0000000000000000000000000000000000000001", 2); 
+            
+            expect(add1_val0).to.equal(11);
+            expect(add1_val1).to.equal(22);
+            expect(add1_val2).to.equal(33);
+            expect(len).to.equal(3);
+        })
+
+    })
 })
