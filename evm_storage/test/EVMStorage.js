@@ -340,4 +340,37 @@ describe('EVM Storage tests', () => {
         })
 
     })
+
+    describe('Storage Dynamic Array of Structs', async() => {
+        let dynamicArray
+        beforeEach(async () => {
+            const DynamicArray = await ethers.getContractFactory('EVMStorageDynamicArrayStruct');
+            dynamicArray = await DynamicArray.deploy();
+        });
+
+        it('Verify', async() => {
+            const arr_Point0 = await dynamicArray.get_arr_struct_at(0);
+            const arr_Point1 = await dynamicArray.get_arr_struct_at(1);
+            const arr_Point2 = await dynamicArray.get_arr_struct_at(2);
+
+            const [Point0_x, Point0_y, Point0_z, len] = arr_Point0;
+            const [Point1_x, Point1_y, Point1_z, ] = arr_Point1;
+            const [Point2_x, Point2_y, Point2_z, ] = arr_Point2;
+            
+            expect(Point0_x).to.equal(11);
+            expect(Point0_y).to.equal(22);
+            expect(Point0_z).to.equal(33);
+
+            expect(Point1_x).to.equal(44);
+            expect(Point1_y).to.equal(55);
+            expect(Point1_z).to.equal(66);
+
+            expect(Point2_x).to.equal(77);
+            expect(Point2_y).to.equal(88);
+            expect(Point2_z).to.equal(99);
+
+            expect(len).to.equal(3);
+        })
+
+    })
 })

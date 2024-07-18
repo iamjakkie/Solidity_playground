@@ -391,3 +391,37 @@ contract EVMStorageMappingArray {
         }
     }
 }
+
+contract EVMStorageDynamicArrayStruct {
+    // takes 2 slots in total per entry
+    struct Point {
+        uint256 x; // 1 slot
+        uint128 y; // 0.5 slot
+        uint128 z; // 0.5 slot
+    }
+
+    // slot of element = keccak256(slot where array is declared) + index of element
+    // keccak256(0) + index of element * 2 slots
+    Point[] private arr;
+
+    constructor() {
+        arr.push(Point(11, 22, 33));
+        arr.push(Point(44, 55, 66));
+        arr.push(Point(77, 88, 99));
+    }
+
+    function get_arr_struct_at(uint256 i) public view returns (uint256 x, uint128 y, uint128 z, uint256 len) {
+        // slot of element = keccak256(0) + size of element * index of element
+        bytes32 start = keccak256(abi.encode(uint256(0)));
+
+        assembly {
+            len := sload(0)
+            // x
+            // z | y
+            x := sload(add(start, mul(i, 2)))
+            let zy := sload(add(start, add(mul(2, i), 1)))
+            z := shr(128, zy)
+            y := zy
+        }
+    }
+}
