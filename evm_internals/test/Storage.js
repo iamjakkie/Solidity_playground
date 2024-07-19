@@ -2,11 +2,6 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
 describe('EVM Storage tests', () => {
-    // before(async () => {
-    //     // const SingleSlot = await ethers.getContractFactory('EVMStorageSingleSlot');
-    //     // singleSlot = await SingleSlot.deploy();
-    // });
-
     describe('Single Slot', () => {
         let singleSlot
 
@@ -27,7 +22,7 @@ describe('EVM Storage tests', () => {
             expect(s_z_value).to.equal("0x0000000000000000000000000000000000000000000000000000000000ababab");
         })
 
-        it('SStore test #2', async() => {
+        it('SStore test #2', async () => {
             const tx = await singleSlot.sstore_new();
             await tx.wait()
 
@@ -39,7 +34,7 @@ describe('EVM Storage tests', () => {
             expect(s_z_value).to.equal("0x0000000000000000000000000000000000000000000000000000000000cdcdcd");
         })
 
-        it('Sload test #1', async() => {
+        it('Sload test #1', async () => {
             let [s_x_value, s_y_value, s_z_value] = await singleSlot.sload();
 
             expect(s_x_value).to.equal(0);
@@ -65,7 +60,7 @@ describe('EVM Storage tests', () => {
             expect(s_z_value).to.equal("0x0000000000000000000000000000000000000000000000000000000000cdcdcd");
         })
 
-        it('Sload test #2', async() => {
+        it('Sload test #2', async () => {
             let [s_x_value, s_y_value, s_z_value] = await singleSlot.sload_new();
 
             expect(s_x_value).to.equal(0);
@@ -99,19 +94,19 @@ describe('EVM Storage tests', () => {
             bitMasking = await BitMasking.deploy();
         });
 
-        it('Test Mask', async() => {
+        it('Test Mask', async () => {
             const mask = await bitMasking.mask();
 
             expect(mask).to.equal("0x000000000000000000000000000000000000000000000000000000000000ffff");
         })
 
-        it('Test Shift Mask', async() => {
+        it('Test Shift Mask', async () => {
             const shift_mask = await bitMasking.shift_mask();
 
             expect(shift_mask).to.equal("0x0000000000000000000000000000000000000000000000000000ffff00000000")
         })
 
-        it('Not Mask', async() => {
+        it('Not Mask', async () => {
             const not_mask = await bitMasking.not_mask();
 
             expect(not_mask).to.equal("0xffffffffffffffffffffffffffffffffffffffffffffffffffff0000ffffffff")
@@ -137,10 +132,10 @@ describe('EVM Storage tests', () => {
             expect(s_b_value).to.equal(22);
             expect(s_c_value).to.equal(33);
             expect(s_d_value).to.equal(44);
-            
+
         })
 
-        it('Test offsets', async() => {
+        it('Test offsets', async () => {
             const offsets = await packedSlot.slot0_offset();
             const [s_a_offset, s_b_offset, s_c_offset, s_d_offset] = offsets;
 
@@ -163,26 +158,26 @@ describe('EVM Storage tests', () => {
             expect(s_b_value).to.equal(22);
             expect(s_c_value).to.equal(33);
             expect(s_d_value).to.equal(44);
-            
+
         })
     })
 
-    describe('Storage structs', async() => {
+    describe('Storage structs', async () => {
         let storageStruct
         beforeEach(async () => {
             const StorageStruct = await ethers.getContractFactory('EVMStorageStruct');
             storageStruct = await StorageStruct.deploy();
         });
 
-        it('Get single slot struct', async() => {
+        it('Get single slot struct', async () => {
             const [x_value, y_value, z_value] = await storageStruct.get_single_slot_struct();
-            
+
             expect(x_value).to.equal(1);
             expect(y_value).to.equal(2);
             expect(z_value).to.equal(3);
         })
 
-        it('Get multiple slots struct', async() => {
+        it('Get multiple slots struct', async () => {
             const [a_value, b_value, c_value] = await storageStruct.get_multiple_slots_struct();
 
             expect(a_value).to.equal(11);
@@ -191,14 +186,14 @@ describe('EVM Storage tests', () => {
         })
     })
 
-    describe('Storage constants', async() => {
+    describe('Storage constants', async () => {
         let storageConstant
         beforeEach(async () => {
             const StorageConstant = await ethers.getContractFactory('EVMStorageConstants');
             storageConstant = await StorageConstant.deploy();
         });
 
-        it('Verify slots dont store constants', async() => {
+        it('Verify slots dont store constants', async () => {
             const [v_0, v_1] = await storageConstant.get_slots()
 
             expect(v_0).to.equal(1);
@@ -207,43 +202,43 @@ describe('EVM Storage tests', () => {
 
     })
 
-    describe('Storage Fixed array', async() => {
+    describe('Storage Fixed array', async () => {
         let fixedArray
         beforeEach(async () => {
             const FixedArray = await ethers.getContractFactory('EVMStorageFixedArray');
             fixedArray = await FixedArray.deploy();
         });
 
-        it('Verify arr 0 values', async() => {
+        it('Verify arr 0 values', async () => {
             const val_0 = await fixedArray.get_arr0(0);
             const val_1 = await fixedArray.get_arr0(1);
             const val_2 = await fixedArray.get_arr0(2);
-            
+
             expect(val_0).to.equal(1);
             expect(val_1).to.equal(2);
             expect(val_2).to.equal(3);
 
         })
 
-        it('Verify arr 1 values', async() => {
+        it('Verify arr 1 values', async () => {
             const val_0 = await fixedArray.get_arr1(0);
             const val_1 = await fixedArray.get_arr1(1);
             const val_2 = await fixedArray.get_arr1(2);
-            
+
             expect(val_0).to.equal(4);
             expect(val_1).to.equal(5);
             expect(val_2).to.equal(6);
 
         })
 
-        it('Verify arr 2 values', async() => {
+        it('Verify arr 2 values', async () => {
             const val_0 = await fixedArray.get_arr2(0);
             const val_1 = await fixedArray.get_arr2(1);
             const val_2 = await fixedArray.get_arr2(2);
             const val_3 = await fixedArray.get_arr2(3);
             const val_4 = await fixedArray.get_arr2(4);
             const val_5 = await fixedArray.get_arr2(5);
-            
+
             expect(val_0).to.equal(7);
             expect(val_1).to.equal(8);
             expect(val_2).to.equal(9);
@@ -255,46 +250,46 @@ describe('EVM Storage tests', () => {
 
     })
 
-    describe('Storage Dynamic array', async() => {
+    describe('Storage Dynamic array', async () => {
         let dynamicArray
         beforeEach(async () => {
             const DynamicArray = await ethers.getContractFactory('EVMStorageDynamicArray');
             dynamicArray = await DynamicArray.deploy();
         });
 
-        it('Verify arr values', async() => {
+        it('Verify arr values', async () => {
             const [arr_val_0, arr_b32_0, len] = await dynamicArray.get_arr_val(0, 0);
 
             expect(arr_val_0).to.equal(11);
             expect(arr_b32_0).to.equal("0x000000000000000000000000000000000000000000000000000000000000000b");
             expect(len).to.equal(3);
 
-            const [arr_val_1, arr_b32_1, ] = await dynamicArray.get_arr_val(0, 1);
+            const [arr_val_1, arr_b32_1,] = await dynamicArray.get_arr_val(0, 1);
 
             expect(arr_val_1).to.equal(22);
             expect(arr_b32_1).to.equal("0x0000000000000000000000000000000000000000000000000000000000000016");
-            
-            const [arr_val_2, arr_b32_2, ] = await dynamicArray.get_arr_val(0, 2);
+
+            const [arr_val_2, arr_b32_2,] = await dynamicArray.get_arr_val(0, 2);
 
             expect(arr_val_2).to.equal(33);
             expect(arr_b32_2).to.equal("0x0000000000000000000000000000000000000000000000000000000000000021");
-            
+
         })
 
     })
 
-    describe('Storage Mapping', async() => {
+    describe('Storage Mapping', async () => {
         let mapping
         beforeEach(async () => {
             const Mapping = await ethers.getContractFactory('EVMStorageMapping');
             mapping = await Mapping.deploy();
         });
 
-        it('Verify', async() => {
+        it('Verify', async () => {
             const add1_val = await mapping.get_value("0x0000000000000000000000000000000000000001");
             const add2_val = await mapping.get_value("0x0000000000000000000000000000000000000002");
             const add3_val = await mapping.get_value("0x0000000000000000000000000000000000000003");
-            
+
             expect(add1_val).to.equal(11);
             expect(add2_val).to.equal(22);
             expect(add3_val).to.equal(33);
@@ -302,18 +297,18 @@ describe('EVM Storage tests', () => {
 
     })
 
-    describe('Storage Nested Mapping', async() => {
+    describe('Storage Nested Mapping', async () => {
         let mapping
         beforeEach(async () => {
             const Mapping = await ethers.getContractFactory('EVMStorageNestedMapping');
             mapping = await Mapping.deploy();
         });
 
-        it('Verify', async() => {
+        it('Verify', async () => {
             const add1_val = await mapping.get_value("0x0000000000000000000000000000000000000001", "0x0000000000000000000000000000000000000002");
             const add2_val = await mapping.get_value("0x0000000000000000000000000000000000000002", "0x0000000000000000000000000000000000000003");
             const add3_val = await mapping.get_value("0x0000000000000000000000000000000000000003", "0x0000000000000000000000000000000000000001");
-            
+
             expect(add1_val).to.equal(11);
             expect(add2_val).to.equal(22);
             expect(add3_val).to.equal(33);
@@ -321,18 +316,18 @@ describe('EVM Storage tests', () => {
 
     })
 
-    describe('Storage Mapping Dynamic Array', async() => {
+    describe('Storage Mapping Dynamic Array', async () => {
         let mapping
         beforeEach(async () => {
             const Mapping = await ethers.getContractFactory('EVMStorageMappingArray');
             mapping = await Mapping.deploy();
         });
 
-        it('Verify', async() => {
-            const [add1_val0, ] = await mapping.get_map_array_val("0x0000000000000000000000000000000000000001", 0);
-            const [add1_val1, ] = await mapping.get_map_array_val("0x0000000000000000000000000000000000000001", 1); 
-            const [add1_val2, len] = await mapping.get_map_array_val("0x0000000000000000000000000000000000000001", 2); 
-            
+        it('Verify', async () => {
+            const [add1_val0,] = await mapping.get_map_array_val("0x0000000000000000000000000000000000000001", 0);
+            const [add1_val1,] = await mapping.get_map_array_val("0x0000000000000000000000000000000000000001", 1);
+            const [add1_val2, len] = await mapping.get_map_array_val("0x0000000000000000000000000000000000000001", 2);
+
             expect(add1_val0).to.equal(11);
             expect(add1_val1).to.equal(22);
             expect(add1_val2).to.equal(33);
@@ -341,22 +336,22 @@ describe('EVM Storage tests', () => {
 
     })
 
-    describe('Storage Dynamic Array of Structs', async() => {
+    describe('Storage Dynamic Array of Structs', async () => {
         let dynamicArray
         beforeEach(async () => {
             const DynamicArray = await ethers.getContractFactory('EVMStorageDynamicArrayStruct');
             dynamicArray = await DynamicArray.deploy();
         });
 
-        it('Verify', async() => {
+        it('Verify', async () => {
             const arr_Point0 = await dynamicArray.get_arr_struct_at(0);
             const arr_Point1 = await dynamicArray.get_arr_struct_at(1);
             const arr_Point2 = await dynamicArray.get_arr_struct_at(2);
 
             const [Point0_x, Point0_y, Point0_z, len] = arr_Point0;
-            const [Point1_x, Point1_y, Point1_z, ] = arr_Point1;
-            const [Point2_x, Point2_y, Point2_z, ] = arr_Point2;
-            
+            const [Point1_x, Point1_y, Point1_z,] = arr_Point1;
+            const [Point2_x, Point2_y, Point2_z,] = arr_Point2;
+
             expect(Point0_x).to.equal(11);
             expect(Point0_y).to.equal(22);
             expect(Point0_z).to.equal(33);
@@ -374,3 +369,4 @@ describe('EVM Storage tests', () => {
 
     })
 })
+
