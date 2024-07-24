@@ -21,3 +21,39 @@ contract MemExp {
         return gas_start - gas_end;
     }
 }
+
+contract MemStruct {
+    // Memory data is not packed - stored in chunks of 32 bytes
+    struct Point {
+        uint256 x;
+        uint32 y;
+        uint32 z;
+    }
+
+    function read() public pure returns (uint256 x, uint256 y, uint256 z) {
+        // Point is loaded to memory starting at 0x80
+        // 0x80 - initial free memory
+        Point memory p = Point(1, 2, 3);
+
+        assembly {
+            x := mload(0x80)
+            y := mload(0xa0)
+            z := mload(0xc0)
+        }
+    }
+
+    function write() public pure returns (bytes32 free_mem_ptr, uint256 x, uint256 y, uint256 z) {
+        Point memory p;
+
+        assembly {
+            mstore(0x80, 11)
+            mstore(0xa0, 22)
+            mstore(0xc0, 33)
+            free_mem_ptr := mload(0x40)
+        }
+
+        x = p.x;
+        y = p.y;
+        z = p.z;
+    }
+}

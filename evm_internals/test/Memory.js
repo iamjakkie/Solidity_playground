@@ -32,4 +32,30 @@ describe('EVM Memory tests', () => {
             expect(gas_used_1).to.equal(180);
         })
     })
+
+    describe('Memory struct', () => {
+        let memStruct
+
+        beforeEach(async () => {
+            const MemStruct = await ethers.getContractFactory('MemStruct');
+            memStruct = await MemStruct.deploy();
+        });
+
+        it('Read data from memory', async () => {
+            const [x, y, z] = await memStruct.read();
+
+            expect(x).to.equal(1);
+            expect(y).to.equal(2);
+            expect(z).to.equal(3);
+        })
+
+        it("Write data to memory", async() => {
+            const [ptr, x, y, z] = await memStruct.write();
+
+            expect(ptr).to.equal("0x00000000000000000000000000000000000000000000000000000000000000e0");
+            expect(x).to.equal(11);
+            expect(y).to.equal(22);
+            expect(z).to.equal(33);
+        })
+    })
 })
