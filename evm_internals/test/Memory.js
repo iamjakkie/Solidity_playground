@@ -58,4 +58,30 @@ describe('EVM Memory tests', () => {
             expect(z).to.equal(33);
         })
     })
+
+    describe('Memory fixed array', () => {
+        let memFixedArray
+
+        beforeEach(async () => {
+            const MemFixArray = await ethers.getContractFactory('MemFixedArray');
+            memFixedArray = await MemFixArray.deploy();
+        });
+
+        it('Read data from memory', async () => {
+            const [a0, a1, a2] = await memFixedArray.read();
+
+            expect(a0).to.equal(1);
+            expect(a1).to.equal(2);
+            expect(a2).to.equal(3);
+        })
+
+        it('Write data into memory', async () => {
+            const [a0, a1, a2] = await memFixedArray.write();
+
+            expect(a0).to.equal(11);
+            expect(a1).to.equal(22);
+            expect(a2).to.equal(33);
+        })
+
+    })
 })
