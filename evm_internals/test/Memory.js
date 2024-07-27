@@ -84,4 +84,38 @@ describe('EVM Memory tests', () => {
         })
 
     })
+
+    describe('Memory dynamic array', () => {
+        let memDynamicArray
+
+        beforeEach(async () => {
+            const MemDynamicArray = await ethers.getContractFactory('MemDynamicArray');
+            memDynamicArray = await MemDynamicArray.deploy();
+        });
+
+        it('Read data from memory', async () => {
+            const [p, len, a0, a1, a2, a3, a4] = await memDynamicArray.read();
+
+            expect(p).to.equal("0x0000000000000000000000000000000000000000000000000000000000000080");
+            expect(len).to.equal(5);
+            
+            expect(a0).to.equal(11);
+            expect(a1).to.equal(22);
+            expect(a2).to.equal(33);
+            expect(a3).to.equal(44);
+            expect(a4).to.equal(55);
+        })
+
+        it('Read data from memory', async () => {
+            const [p, arr] = await memDynamicArray.write();
+            const [a0, a1, a2] = arr;
+
+            expect(p).to.equal("0x0000000000000000000000000000000000000000000000000000000000000080");
+            
+            expect(a0).to.equal(11);
+            expect(a1).to.equal(22);
+            expect(a2).to.equal(33);
+        })
+
+    })
 })

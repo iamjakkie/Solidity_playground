@@ -42,7 +42,11 @@ contract MemStruct {
         }
     }
 
-    function write() public pure returns (bytes32 free_mem_ptr, uint256 x, uint256 y, uint256 z) {
+    function write()
+        public
+        pure
+        returns (bytes32 free_mem_ptr, uint256 x, uint256 y, uint256 z)
+    {
         Point memory p;
 
         assembly {
@@ -81,5 +85,55 @@ contract MemFixedArray {
         a0 = arr[0];
         a1 = arr[1];
         a2 = arr[2];
+    }
+}
+
+contract MemDynamicArray {
+    function read()
+        public
+        pure
+        returns (
+            bytes32 p,
+            uint256 len,
+            uint256 a0,
+            uint256 a1,
+            uint256 a2,
+            uint256 a3,
+            uint256 a4
+        )
+    {
+        uint256[] memory arr = new uint256[](5);
+        arr[0] = uint256(11);
+        arr[1] = uint256(22);
+        arr[2] = uint256(33);
+        arr[3] = uint256(44);
+        arr[4] = uint256(55);
+
+        assembly {
+            p := arr
+            len := mload(arr)
+
+            a0 := mload(add(arr, 0x20))
+            a1 := mload(add(arr, mul(0x20, 2)))
+            a2 := mload(add(arr, mul(0x20, 3)))
+            a3 := mload(add(arr, mul(0x20, 4)))
+            a4 := mload(add(arr, mul(0x20, 5)))
+        }
+    }
+
+    function write() public pure returns (bytes32 p, uint256[] memory) {
+        uint256[] memory arr = new uint256[](0);
+
+        assembly {
+            p := arr
+            mstore(arr, 3)
+            mstore(add(arr, 0x20), 11)
+            mstore(add(arr, 0x40), 22)
+            mstore(add(arr, 0x60), 33)
+            // update dynamic pointer
+            mstore(0x40, add(arr, 0x80))
+        }
+
+        return (p, arr);
     }
 }
